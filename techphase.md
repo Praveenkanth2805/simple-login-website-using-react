@@ -96,3 +96,32 @@ src/
 * Additional particle effects for mouse interaction
 * Extra subtle background elements
 * Fine-tuning timings for maximum magical/dreamy experience
+
+---
+
+## Phase 9: Simple Backend Integration (Django Templates)
+
+* **Backend Framework:** Django
+* **Phase 9.1:** Demo Users (Hardcoded)
+
+  * Hardcode a few username/password combinations in Django views
+  * Login form posts to Django view
+  * Template adds CSS classes to trigger **success/failure animations**
+* **Phase 9.2:** SQLite Database (Optional / Later)
+
+  * Store users in a simple SQLite DB
+  * Django authenticates against DB instead of hardcoded users
+  * Easy to switch from demo users to database
+* **Phase 9.3:** Django Templates Logic for Animations
+
+  * Add conditional CSS classes based on login result
+  * Triggers all magical effects (shake, glow, sparkles, fade, portal) via template logic
+* **Phase 9.4:** Security Considerations
+
+  * Use HTTPS / SSL for secure data transfer
+  * Store passwords hashed
+  * Simple validation for login form
+* **Phase 9.5:** Optional Enhancements
+
+  * Add animated loading indicator during authentication
+  * Keep animations smooth & subtle even with backend responses
