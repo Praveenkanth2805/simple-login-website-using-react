@@ -1,119 +1,147 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import confetti from "canvas-confetti";
 
 function App() {
-  const [page, setPage] = useState("login");
-  const [toyState, setToyState] = useState("normal");
-  const [eyePos, setEyePos] = useState({ x: 0, y: 0 });
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [focused, setFocused] = useState(null);
+  const [celebrate, setCelebrate] = useState(false);
+  const [mouse, setMouse] = useState({ x: 0, y: 0 });
 
-  const handleMouseMove = (e) => {
-    const x = (e.clientX / window.innerWidth - 0.5) * 12;
-    const y = (e.clientY / window.innerHeight - 0.5) * 12;
-    setEyePos({ x, y });
+  // Mouse tracking
+  useEffect(() => {
+    const move = (e) => {
+      const x = (e.clientX / window.innerWidth - 0.5) * 20;
+      const y = (e.clientY / window.innerHeight - 0.5) * 20;
+      setMouse({ x, y });
+    };
+    window.addEventListener("mousemove", move);
+    return () => window.removeEventListener("mousemove", move);
+  }, []);
+
+  // Confetti burst
+  const triggerCelebration = () => {
+    setCelebrate(true);
+    confetti({
+      particleCount: 200,
+      spread: 120,
+      origin: { y: 0.6 },
+    });
   };
 
-  if (page === "celebrate") {
-    return (
-      <div className="h-screen gradient-bg flex flex-col items-center justify-center text-white relative overflow-hidden">
-
-        <div className="confetti"></div>
-
-        <h1 className="text-5xl font-bold mb-10 animate-bounce">
-          🎉 Welcome {username} 🎉
-        </h1>
-
-        <div className="flex gap-12">
-          <div className="dance teddy"></div>
-          <div className="dance bunny"></div>
-          <div className="dance panda"></div>
-          <div className="dance cat"></div>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div
-      onMouseMove={handleMouseMove}
-      className="gradient-bg h-screen flex flex-col items-center justify-center text-white"
-    >
+    <div className={`main-bg ${celebrate ? "bright" : ""}`}>
 
-      {/* TEDDY */}
-      <div className="relative mb-10">
-
-        {/* Ears */}
-        <div className="ear left-ear"></div>
-        <div className="ear right-ear"></div>
-
-        {/* Head */}
-        <div className="teddy-head">
-
-          {/* Eyes */}
-          {toyState !== "cover" && (
-            <>
-              <div
-                className="eye left-eye"
-                style={{ transform: `translate(${eyePos.x}px, ${eyePos.y}px)` }}
-              ></div>
-              <div
-                className="eye right-eye"
-                style={{ transform: `translate(${eyePos.x}px, ${eyePos.y}px)` }}
-              ></div>
-            </>
-          )}
-
-          {/* Hands */}
-          {toyState === "cover" && (
-            <>
-              <div className="hand left-hand"></div>
-              <div className="hand right-hand"></div>
-            </>
-          )}
-
-          <div className={`mouth ${toyState === "happy" ? "big" : ""}`}></div>
-        </div>
-      </div>
-
-      {/* LOGIN CARD */}
-      <div className="glass-card">
-
-        <h2 className="title">Teddy Secure Login</h2>
-
-        {/* Username */}
-        <div className="input-group">
-          <input
-            type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            onFocus={() => setToyState("happy")}
-            onBlur={() => setToyState("normal")}
-            required
-          />
-          <label className={username ? "filled" : ""}>Username</label>
-        </div>
-
-        {/* Password */}
-        <div className="input-group">
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            onFocus={() => setToyState("cover")}
-            onBlur={() => setToyState("normal")}
-            required
-          />
-          <label className={password ? "filled" : ""}>Password</label>
-        </div>
-
-        <button
-          onClick={() => setPage("celebrate")}
-          className="login-btn"
+      {/* Celebration Overlay */}
+      {celebrate && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="celebration-screen"
         >
-          Login
-        </button>
+          <h1>🎉 Welcome {username} 🎉</h1>
+          <div className="dance-row">
+            <div className="dance teddy-dance"></div>
+            <div className="dance panda-dance"></div>
+            <div className="dance bunny"></div>
+            <div className="dance cat"></div>
+          </div>
+        </motion.div>
+      )}
 
-      </div>
+      {/* Characters Section */}
+      {!celebrate && (
+        <>
+          <div className="characters">
+
+            {/* Hearts Always Floating */}
+            <div className="hearts">
+              <span>💖</span>
+              <span>💕</span>
+              <span>💗</span>
+            </div>
+
+            {/* TEDDY */}
+            <motion.div
+              animate={{
+                rotate:
+                  focused === "password"
+                    ? 25
+                    : mouse.x / 4,
+                y: mouse.y / 5,
+              }}
+              transition={{ type: "spring", stiffness: 100 }}
+              className="teddy"
+            >
+              <div
+                className="eye left"
+                style={{
+                  transform: `translate(${mouse.x / 3}px, ${mouse.y / 3}px)`
+                }}
+              />
+              <div
+                className="eye right"
+                style={{
+                  transform: `translate(${mouse.x / 3}px, ${mouse.y / 3}px)`
+                }}
+              />
+            </motion.div>
+
+            {/* PANDA */}
+            <motion.div
+              animate={{
+                scale: username ? 1.05 : 1,
+              }}
+              className="panda"
+            >
+              <div className={`blush ${username ? "show" : ""}`} />
+            </motion.div>
+
+          </div>
+
+          {/* Glass Login Card */}
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="glass-card"
+          >
+            <h2>Premium Secure Login</h2>
+
+            <div className="input-group">
+              <input
+                type="text"
+                value={username}
+                onFocus={() => setFocused("username")}
+                onBlur={() => setFocused(null)}
+                onChange={(e) => setUsername(e.target.value)}
+                required
+              />
+              <label className={username ? "filled" : ""}>
+                Username
+              </label>
+            </div>
+
+            <div className="input-group">
+              <input
+                type="password"
+                value={password}
+                onFocus={() => setFocused("password")}
+                onBlur={() => setFocused(null)}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+              <label className={password ? "filled" : ""}>
+                Password
+              </label>
+            </div>
+
+            <button onClick={triggerCelebration}>
+              Login
+            </button>
+          </motion.div>
+        </>
+      )}
     </div>
   );
 }

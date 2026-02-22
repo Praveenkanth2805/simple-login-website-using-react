@@ -1,40 +1,23 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
 body {
   margin: 0;
-  overflow: hidden;
+  font-family: 'Segoe UI', sans-serif;
 }
 
-/* Gradient animation */
-@keyframes gradientMove {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-
-.gradient-bg {
-  background: linear-gradient(-45deg, #1e3a8a, #7c3aed, #0ea5e9, #9333ea);
-  background-size: 400% 400%;
-  animation: gradientMove 12s ease infinite;
-}
-
-/* Shake animation */
-@keyframes shake {
-  0%,100% { transform: translateX(0); }
-  25% { transform: translateX(-5px); }
-  75% { transform: translateX(5px); }
-}
-
-.shake {
-  animation: shake 0.4s;
-}
-/* Background */
-.gradient-bg {
+.main-bg {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   background: linear-gradient(-45deg, #1e3a8a, #0ea5e9, #9333ea, #06b6d4);
   background-size: 400% 400%;
   animation: gradientMove 12s ease infinite;
+  color: white;
+  overflow: hidden;
+}
+
+.main-bg.bright {
+  background: linear-gradient(135deg, #9333ea, #0ea5e9);
 }
 
 @keyframes gradientMove {
@@ -45,21 +28,20 @@ body {
 
 /* Glass Card */
 .glass-card {
-  width: 380px;
+  width: 360px;
   padding: 40px;
   border-radius: 20px;
-  backdrop-filter: blur(20px);
-  background: rgba(255,255,255,0.1);
-  box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+  backdrop-filter: blur(25px);
+  background: rgba(255,255,255,0.12);
+  box-shadow: 0 20px 50px rgba(0,0,0,0.4);
 }
 
-.title {
+.glass-card h2 {
   text-align: center;
-  font-size: 28px;
   margin-bottom: 30px;
 }
 
-/* Floating Inputs */
+/* Inputs */
 .input-group {
   position: relative;
   margin-bottom: 25px;
@@ -73,7 +55,6 @@ body {
   border-bottom: 2px solid white;
   color: white;
   outline: none;
-  font-size: 16px;
 }
 
 .input-group label {
@@ -82,7 +63,6 @@ body {
   top: 12px;
   transition: 0.3s;
   color: #ddd;
-  pointer-events: none;
 }
 
 .input-group input:focus + label,
@@ -92,43 +72,46 @@ body {
   color: cyan;
 }
 
-/* Button */
-.login-btn {
+button {
   width: 100%;
   padding: 12px;
   border-radius: 10px;
+  border: none;
   background: cyan;
-  color: black;
   font-weight: bold;
+  cursor: pointer;
   transition: 0.3s;
 }
 
-.login-btn:hover {
+button:hover {
   transform: scale(1.05);
 }
 
-/* Teddy */
-.teddy-head {
-  width: 160px;
-  height: 160px;
-  background: #facc15;
+/* Characters */
+.characters {
+  display: flex;
+  gap: 80px;
+  margin-bottom: 40px;
+  position: relative;
+}
+
+.teddy, .panda {
+  width: 150px;
+  height: 150px;
   border-radius: 50%;
   position: relative;
-  box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.4);
 }
 
-.ear {
-  width: 50px;
-  height: 50px;
+.teddy {
   background: #facc15;
-  border-radius: 50%;
-  position: absolute;
-  top: -15px;
 }
 
-.left-ear { left: -20px; }
-.right-ear { right: -20px; }
+.panda {
+  background: white;
+}
 
+/* Eyes */
 .eye {
   width: 18px;
   height: 18px;
@@ -136,47 +119,62 @@ body {
   border-radius: 50%;
   position: absolute;
   top: 60px;
-  transition: 0.1s;
 }
 
-.left-eye { left: 45px; }
-.right-eye { right: 45px; }
+.eye.left { left: 45px; }
+.eye.right { right: 45px; }
 
-.hand {
-  width: 60px;
-  height: 60px;
-  background: #fbbf24;
+/* Panda Blush */
+.blush {
+  width: 20px;
+  height: 12px;
+  background: pink;
   border-radius: 50%;
   position: absolute;
-  top: 50px;
-  animation: cover 0.3s ease forwards;
-}
-
-.left-hand { left: 10px; }
-.right-hand { right: 10px; }
-
-@keyframes cover {
-  from { transform: translateY(50px); }
-  to { transform: translateY(0); }
-}
-
-.mouth {
-  width: 50px;
-  height: 25px;
-  border-bottom: 4px solid black;
-  border-radius: 50%;
-  position: absolute;
-  bottom: 30px;
-  left: 50%;
-  transform: translateX(-50%);
+  bottom: 40px;
+  left: 65px;
+  opacity: 0;
   transition: 0.3s;
 }
 
-.mouth.big {
-  transform: translateX(-50%) scale(1.4);
+.blush.show {
+  opacity: 1;
+}
+
+/* Hearts */
+.hearts span {
+  position: absolute;
+  font-size: 22px;
+  animation: float 3s infinite ease-in-out;
+}
+
+.hearts span:nth-child(1) { left: -40px; }
+.hearts span:nth-child(2) { left: 0px; animation-delay: 1s; }
+.hearts span:nth-child(3) { left: 40px; animation-delay: 2s; }
+
+@keyframes float {
+  0% { transform: translateY(0); opacity: 0; }
+  50% { transform: translateY(-40px); opacity: 1; }
+  100% { transform: translateY(-80px); opacity: 0; }
 }
 
 /* Celebration */
+.celebration-screen {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, #9333ea, #0ea5e9);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.dance-row {
+  display: flex;
+  gap: 40px;
+  margin-top: 30px;
+}
+
 .dance {
   width: 100px;
   height: 100px;
@@ -184,33 +182,12 @@ body {
   animation: dance 1s infinite alternate;
 }
 
-.teddy { background: #facc15; }
+.teddy-dance { background: #facc15; }
+.panda-dance { background: white; }
 .bunny { background: pink; }
-.panda { background: white; }
 .cat { background: orange; }
 
 @keyframes dance {
   from { transform: rotate(-10deg) scale(1); }
   to { transform: rotate(10deg) scale(1.1); }
-}
-
-/* Confetti */
-.confetti {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  background: repeating-linear-gradient(
-    45deg,
-    red 0px,
-    red 10px,
-    yellow 10px,
-    yellow 20px
-  );
-  opacity: 0.1;
-  animation: confettiMove 3s linear infinite;
-}
-
-@keyframes confettiMove {
-  from { background-position: 0 0; }
-  to { background-position: 200px 200px; }
 }
