@@ -1,122 +1,119 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import confetti from "canvas-confetti";
-import teddy from "./assets/teddy.svg";
-import panda from "./assets/panda.svg";
+import Teddy from "./assets/teddy.svg";
+import Panda from "./assets/panda.svg";
+import "./App.css";
 
 function App() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [focused, setFocused] = useState(null);
-  const [celebrate, setCelebrate] = useState(false);
-  const [mouse, setMouse] = useState({ x: 0, y: 0 });
+  const [error, setError] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
 
+  // Track mouse
   useEffect(() => {
-    const move = (e) => {
-      const x = (e.clientX / window.innerWidth - 0.5) * 30;
-      const y = (e.clientY / window.innerHeight - 0.5) * 30;
-      setMouse({ x, y });
+    const handleMouseMove = (e) => {
+      setMousePos({
+        x: e.clientX,
+        y: e.clientY,
+      });
     };
-    window.addEventListener("mousemove", move);
-    return () => window.removeEventListener("mousemove", move);
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => window.removeEventListener("mousemove", handleMouseMove);
   }, []);
 
+  // Calculate head rotation
+  const rotateValue = (mousePos.x - window.innerWidth / 2) / 40;
+
   const handleLogin = () => {
-    setCelebrate(true);
-    confetti({
-      particleCount: 250,
-      spread: 140,
-      origin: { y: 0.6 },
-    });
+    if (username === "admin" && password === "1234") {
+      setError(false);
+      setSuccess(true);
+      confetti({ particleCount: 200, spread: 120 });
+    } else {
+      setError(true);
+      setTimeout(() => setError(false), 800);
+    }
   };
+
+  if (success) {
+    return (
+      <div className="layout celebrate">
+        <h1>🎉 Welcome 🎉</h1>
+        <div className="dance-row">
+          <img src={Teddy} className="dance" />
+          <img src={Panda} className="dance" />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="layout">
+      <div className="row">
+        {/* Teddy */}
+        <motion.img
+          src={Teddy}
+          className="animal"
+          animate={{
+            rotate: error
+              ? [0, -15, 15, -15, 15, 0]
+              : rotateValue,
+          }}
+          transition={{ duration: 0.4 }}
+        />
 
-      {!celebrate && (
-        <div className="row">
+        {/* Login Card */}
+        <div className="glass-card">
+          <h2>Login</h2>
 
-          {/* Teddy */}
-          <motion.img
-            src={teddy}
-            alt="teddy"
-            className="animal"
-            animate={{
-              rotate: mouse.x / 5,
-              y: mouse.y / 8,
-            }}
-            transition={{ type: "spring", stiffness: 80 }}
-          />
-
-          {/* Login Card */}
-          <div className="glass-card">
-            <h2>Secure Login</h2>
-
-            <div className="input-group">
-              <input
-                type="text"
-                value={username}
-                onFocus={() => setFocused("username")}
-                onBlur={() => setFocused(null)}
-                onChange={(e) => setUsername(e.target.value)}
-                required
-              />
-              <label className={username ? "filled" : ""}>
-                Username
-              </label>
-            </div>
-
-            <div className="input-group">
-              <input
-                type="password"
-                value={password}
-                onFocus={() => setFocused("password")}
-                onBlur={() => setFocused(null)}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-              <label className={password ? "filled" : ""}>
-                Password
-              </label>
-            </div>
-
-            <button onClick={handleLogin}>
-              Login
-            </button>
+          <div className="input-group">
+            <input
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+            />
+            <label className={username ? "filled" : ""}>
+              Username
+            </label>
           </div>
 
-          {/* Panda */}
-          <motion.div
-            className="panda-wrapper"
-            animate={{
-              rotate: mouse.x / 5,
-              y: mouse.y / 8,
-            }}
-          >
-            <img src={panda} alt="panda" className="animal" />
-            {focused === "password" && (
-              <div className="blush"></div>
-            )}
-          </motion.div>
+          <div className="input-group">
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+            <label className={password ? "filled" : ""}>
+              Password
+            </label>
+          </div>
 
+          <button onClick={handleLogin}>Login</button>
+
+          {error && (
+            <p style={{ color: "red", marginTop: "15px" }}>
+              Wrong Credentials 😡
+            </p>
+          )}
         </div>
-      )}
 
-      {celebrate && (
-        <motion.div
-          className="celebrate"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-        >
-          <h1>🎉 Welcome {username} 🎉</h1>
-
-          <div className="dance-row">
-            <motion.img src={teddy} className="dance" animate={{ rotate: 10 }} />
-            <motion.img src={panda} className="dance" animate={{ rotate: -10 }} />
-          </div>
-        </motion.div>
-      )}
-
+        {/* Panda */}
+        <motion.img
+          src={Panda}
+          className="animal"
+          animate={{
+            rotate: error
+              ? [0, 15, -15, 15, -15, 0]
+              : -rotateValue,
+          }}
+          transition={{ duration: 0.4 }}
+        />
+      </div>
     </div>
   );
 }
