@@ -1,113 +1,118 @@
 import { useState } from "react";
 
 function App() {
+  const [page, setPage] = useState("login");
   const [toyState, setToyState] = useState("normal");
   const [eyePos, setEyePos] = useState({ x: 0, y: 0 });
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
 
   const handleMouseMove = (e) => {
-    const x = (e.clientX / window.innerWidth - 0.5) * 15;
-    const y = (e.clientY / window.innerHeight - 0.5) * 15;
+    const x = (e.clientX / window.innerWidth - 0.5) * 12;
+    const y = (e.clientY / window.innerHeight - 0.5) * 12;
     setEyePos({ x, y });
   };
+
+  if (page === "celebrate") {
+    return (
+      <div className="h-screen gradient-bg flex flex-col items-center justify-center text-white relative overflow-hidden">
+
+        <div className="confetti"></div>
+
+        <h1 className="text-5xl font-bold mb-10 animate-bounce">
+          🎉 Welcome {username} 🎉
+        </h1>
+
+        <div className="flex gap-12">
+          <div className="dance teddy"></div>
+          <div className="dance bunny"></div>
+          <div className="dance panda"></div>
+          <div className="dance cat"></div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div
       onMouseMove={handleMouseMove}
       className="gradient-bg h-screen flex flex-col items-center justify-center text-white"
     >
-      {/* 🧸 TEDDY */}
-      <div className="relative mb-8">
+
+      {/* TEDDY */}
+      <div className="relative mb-10">
 
         {/* Ears */}
-        <div className="absolute -left-8 -top-6 w-16 h-16 bg-amber-700 rounded-full"></div>
-        <div className="absolute -right-8 -top-6 w-16 h-16 bg-amber-700 rounded-full"></div>
+        <div className="ear left-ear"></div>
+        <div className="ear right-ear"></div>
 
-        {/* Face */}
-        <div className="w-48 h-48 bg-amber-600 rounded-full relative shadow-2xl flex items-center justify-center transition-all duration-300">
+        {/* Head */}
+        <div className="teddy-head">
 
           {/* Eyes */}
           {toyState !== "cover" && (
             <>
-              <div className="absolute left-14 top-16 w-10 h-10 bg-white rounded-full flex items-center justify-center">
-                <div
-                  className="w-4 h-4 bg-black rounded-full"
-                  style={{
-                    transform: `translate(${eyePos.x}px, ${eyePos.y}px)`
-                  }}
-                ></div>
-              </div>
-
-              <div className="absolute right-14 top-16 w-10 h-10 bg-white rounded-full flex items-center justify-center">
-                <div
-                  className="w-4 h-4 bg-black rounded-full"
-                  style={{
-                    transform: `translate(${eyePos.x}px, ${eyePos.y}px)`
-                  }}
-                ></div>
-              </div>
+              <div
+                className="eye left-eye"
+                style={{ transform: `translate(${eyePos.x}px, ${eyePos.y}px)` }}
+              ></div>
+              <div
+                className="eye right-eye"
+                style={{ transform: `translate(${eyePos.x}px, ${eyePos.y}px)` }}
+              ></div>
             </>
           )}
 
-          {/* Hands covering eyes */}
+          {/* Hands */}
           {toyState === "cover" && (
             <>
-              <div className="absolute left-6 top-12 w-16 h-16 bg-amber-700 rounded-full rotate-12"></div>
-              <div className="absolute right-6 top-12 w-16 h-16 bg-amber-700 rounded-full -rotate-12"></div>
+              <div className="hand left-hand"></div>
+              <div className="hand right-hand"></div>
             </>
           )}
 
-          {/* Nose */}
-          <div className="absolute top-28 w-8 h-6 bg-black rounded-full"></div>
-
-          {/* Mouth */}
-          <div
-            className={`absolute top-32 w-16 h-8 border-b-4 border-black rounded-full transition-all duration-300 ${
-              toyState === "happy" ? "scale-125" : ""
-            }`}
-          ></div>
+          <div className={`mouth ${toyState === "happy" ? "big" : ""}`}></div>
         </div>
       </div>
 
       {/* LOGIN CARD */}
-      <div className="bg-white/10 backdrop-blur-lg p-10 rounded-2xl shadow-2xl w-96">
+      <div className="glass-card">
 
-        <h2 className="text-3xl font-bold mb-6 text-center">
-          Super Login
-        </h2>
+        <h2 className="title">Teddy Secure Login</h2>
 
         {/* Username */}
-        <div className="relative mb-6">
+        <div className="input-group">
           <input
             type="text"
-            required
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
             onFocus={() => setToyState("happy")}
             onBlur={() => setToyState("normal")}
-            className="w-full p-3 bg-transparent border-b border-white focus:outline-none focus:border-cyan-400 peer"
+            required
           />
-          <label className="absolute left-0 top-3 text-gray-300 transition-all
-            peer-focus:-top-3 peer-focus:text-sm peer-focus:text-cyan-400">
-            Username
-          </label>
+          <label className={username ? "filled" : ""}>Username</label>
         </div>
 
         {/* Password */}
-        <div className="relative mb-6">
+        <div className="input-group">
           <input
             type="password"
-            required
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
             onFocus={() => setToyState("cover")}
             onBlur={() => setToyState("normal")}
-            className="w-full p-3 bg-transparent border-b border-white focus:outline-none focus:border-cyan-400 peer"
+            required
           />
-          <label className="absolute left-0 top-3 text-gray-300 transition-all
-            peer-focus:-top-3 peer-focus:text-sm peer-focus:text-cyan-400">
-            Password
-          </label>
+          <label className={password ? "filled" : ""}>Password</label>
         </div>
 
-        <button className="w-full py-3 rounded-lg bg-cyan-500 hover:bg-cyan-400 transition-all duration-300 hover:scale-105 active:scale-95 shadow-lg">
+        <button
+          onClick={() => setPage("celebrate")}
+          className="login-btn"
+        >
           Login
         </button>
+
       </div>
     </div>
   );
