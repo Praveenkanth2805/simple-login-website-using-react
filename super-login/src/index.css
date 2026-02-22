@@ -3,21 +3,15 @@ body {
   font-family: 'Segoe UI', sans-serif;
 }
 
-.main-bg {
+.layout {
   height: 100vh;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
   background: linear-gradient(-45deg, #1e3a8a, #0ea5e9, #9333ea, #06b6d4);
   background-size: 400% 400%;
   animation: gradientMove 12s ease infinite;
   color: white;
-  overflow: hidden;
-}
-
-.main-bg.bright {
-  background: linear-gradient(135deg, #9333ea, #0ea5e9);
 }
 
 @keyframes gradientMove {
@@ -26,13 +20,25 @@ body {
   100% { background-position: 0% 50%; }
 }
 
+.row {
+  display: flex;
+  align-items: center;
+  gap: 50px;
+}
+
+.animal {
+  width: 200px;
+  height: auto;
+  filter: drop-shadow(0 20px 30px rgba(0,0,0,0.4));
+}
+
 /* Glass Card */
 .glass-card {
-  width: 360px;
+  width: 350px;
   padding: 40px;
   border-radius: 20px;
   backdrop-filter: blur(25px);
-  background: rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.15);
   box-shadow: 0 20px 50px rgba(0,0,0,0.4);
 }
 
@@ -41,7 +47,6 @@ body {
   margin-bottom: 30px;
 }
 
-/* Inputs */
 .input-group {
   position: relative;
   margin-bottom: 25px;
@@ -87,105 +92,34 @@ button:hover {
   transform: scale(1.05);
 }
 
-/* Characters */
-.characters {
-  display: flex;
-  gap: 80px;
-  margin-bottom: 40px;
-  position: relative;
-}
-
-.teddy, .panda {
-  width: 150px;
-  height: 150px;
-  border-radius: 50%;
-  position: relative;
-  box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-}
-
-.teddy {
-  background: #facc15;
-}
-
-.panda {
-  background: white;
-}
-
-/* Eyes */
-.eye {
-  width: 18px;
-  height: 18px;
-  background: black;
-  border-radius: 50%;
-  position: absolute;
-  top: 60px;
-}
-
-.eye.left { left: 45px; }
-.eye.right { right: 45px; }
-
 /* Panda Blush */
 .blush {
-  width: 20px;
-  height: 12px;
+  width: 30px;
+  height: 15px;
   background: pink;
   border-radius: 50%;
   position: absolute;
-  bottom: 40px;
-  left: 65px;
-  opacity: 0;
-  transition: 0.3s;
-}
-
-.blush.show {
-  opacity: 1;
-}
-
-/* Hearts */
-.hearts span {
-  position: absolute;
-  font-size: 22px;
-  animation: float 3s infinite ease-in-out;
-}
-
-.hearts span:nth-child(1) { left: -40px; }
-.hearts span:nth-child(2) { left: 0px; animation-delay: 1s; }
-.hearts span:nth-child(3) { left: 40px; animation-delay: 2s; }
-
-@keyframes float {
-  0% { transform: translateY(0); opacity: 0; }
-  50% { transform: translateY(-40px); opacity: 1; }
-  100% { transform: translateY(-80px); opacity: 0; }
+  bottom: 70px;
+  left: 85px;
+  opacity: 0.8;
 }
 
 /* Celebration */
-.celebration-screen {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(135deg, #9333ea, #0ea5e9);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+.celebrate {
+  text-align: center;
 }
 
 .dance-row {
   display: flex;
   gap: 40px;
-  margin-top: 30px;
+  justify-content: center;
+  margin-top: 40px;
 }
 
 .dance {
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
+  width: 180px;
   animation: dance 1s infinite alternate;
 }
-
-.teddy-dance { background: #facc15; }
-.panda-dance { background: white; }
-.bunny { background: pink; }
-.cat { background: orange; }
 
 @keyframes dance {
   from { transform: rotate(-10deg) scale(1); }

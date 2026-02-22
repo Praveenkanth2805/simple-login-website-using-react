@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import confetti from "canvas-confetti";
+import teddy from "./assets/teddy.svg";
+import panda from "./assets/panda.svg";
 
 function App() {
   const [username, setUsername] = useState("");
@@ -9,104 +11,46 @@ function App() {
   const [celebrate, setCelebrate] = useState(false);
   const [mouse, setMouse] = useState({ x: 0, y: 0 });
 
-  // Mouse tracking
   useEffect(() => {
     const move = (e) => {
-      const x = (e.clientX / window.innerWidth - 0.5) * 20;
-      const y = (e.clientY / window.innerHeight - 0.5) * 20;
+      const x = (e.clientX / window.innerWidth - 0.5) * 30;
+      const y = (e.clientY / window.innerHeight - 0.5) * 30;
       setMouse({ x, y });
     };
     window.addEventListener("mousemove", move);
     return () => window.removeEventListener("mousemove", move);
   }, []);
 
-  // Confetti burst
-  const triggerCelebration = () => {
+  const handleLogin = () => {
     setCelebrate(true);
     confetti({
-      particleCount: 200,
-      spread: 120,
+      particleCount: 250,
+      spread: 140,
       origin: { y: 0.6 },
     });
   };
 
   return (
-    <div className={`main-bg ${celebrate ? "bright" : ""}`}>
+    <div className="layout">
 
-      {/* Celebration Overlay */}
-      {celebrate && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="celebration-screen"
-        >
-          <h1>🎉 Welcome {username} 🎉</h1>
-          <div className="dance-row">
-            <div className="dance teddy-dance"></div>
-            <div className="dance panda-dance"></div>
-            <div className="dance bunny"></div>
-            <div className="dance cat"></div>
-          </div>
-        </motion.div>
-      )}
-
-      {/* Characters Section */}
       {!celebrate && (
-        <>
-          <div className="characters">
+        <div className="row">
 
-            {/* Hearts Always Floating */}
-            <div className="hearts">
-              <span>💖</span>
-              <span>💕</span>
-              <span>💗</span>
-            </div>
+          {/* Teddy */}
+          <motion.img
+            src={teddy}
+            alt="teddy"
+            className="animal"
+            animate={{
+              rotate: mouse.x / 5,
+              y: mouse.y / 8,
+            }}
+            transition={{ type: "spring", stiffness: 80 }}
+          />
 
-            {/* TEDDY */}
-            <motion.div
-              animate={{
-                rotate:
-                  focused === "password"
-                    ? 25
-                    : mouse.x / 4,
-                y: mouse.y / 5,
-              }}
-              transition={{ type: "spring", stiffness: 100 }}
-              className="teddy"
-            >
-              <div
-                className="eye left"
-                style={{
-                  transform: `translate(${mouse.x / 3}px, ${mouse.y / 3}px)`
-                }}
-              />
-              <div
-                className="eye right"
-                style={{
-                  transform: `translate(${mouse.x / 3}px, ${mouse.y / 3}px)`
-                }}
-              />
-            </motion.div>
-
-            {/* PANDA */}
-            <motion.div
-              animate={{
-                scale: username ? 1.05 : 1,
-              }}
-              className="panda"
-            >
-              <div className={`blush ${username ? "show" : ""}`} />
-            </motion.div>
-
-          </div>
-
-          {/* Glass Login Card */}
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="glass-card"
-          >
-            <h2>Premium Secure Login</h2>
+          {/* Login Card */}
+          <div className="glass-card">
+            <h2>Secure Login</h2>
 
             <div className="input-group">
               <input
@@ -136,12 +80,43 @@ function App() {
               </label>
             </div>
 
-            <button onClick={triggerCelebration}>
+            <button onClick={handleLogin}>
               Login
             </button>
+          </div>
+
+          {/* Panda */}
+          <motion.div
+            className="panda-wrapper"
+            animate={{
+              rotate: mouse.x / 5,
+              y: mouse.y / 8,
+            }}
+          >
+            <img src={panda} alt="panda" className="animal" />
+            {focused === "password" && (
+              <div className="blush"></div>
+            )}
           </motion.div>
-        </>
+
+        </div>
       )}
+
+      {celebrate && (
+        <motion.div
+          className="celebrate"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+        >
+          <h1>🎉 Welcome {username} 🎉</h1>
+
+          <div className="dance-row">
+            <motion.img src={teddy} className="dance" animate={{ rotate: 10 }} />
+            <motion.img src={panda} className="dance" animate={{ rotate: -10 }} />
+          </div>
+        </motion.div>
+      )}
+
     </div>
   );
 }
